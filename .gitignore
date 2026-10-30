@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+# Secrets: never commit keys, even to a private repo
+.env
+*.key
+*.pem
+*.priv
+secrets/
+keys/
+# Large or sensitive field data: keep locally / on the NAS
+data/raw/
+*.iq
+*.cfile
+*.bin
+*.wav
+*.bag
+*.mcap
+*.tlog
+*.BIN
+# OS
+.DS_Store
+
+# Go
+/bin/
+*.test
+coverage.out

@@ -1,0 +1,23 @@
+# Edge agent on a k3s node. Images come only from the local registry mirror;
+# the node keeps running its last good version when the uplink is gone.
+apiVersion: apps/v1
+kind: DaemonSet
+metadata: {name: ddil-agent, namespace: edge}
+spec:
+  selector: {matchLabels: {app: ddil-agent}}
+  template:
+    metadata: {labels: {app: ddil-agent}}
+    spec:
+      containers:
+        - name: agent
+          image: registry.local:5000/ddil-agent:1.0.0
+          imagePullPolicy: IfNotPresent
+          args: ["--outbox=/var/lib/ddil/outbox", "--uplink=nats://hub.local:4222"]
+          volumeMounts: [{name: state, mountPath: /var/lib/ddil}]
+          resources: {limits: {memory: 128Mi, cpu: 250m}}
+      volumes: [{name: state, hostPath: {path: /var/lib/ddil, type: DirectoryOrCreate}}]
+---
+# /etc/rancher/k3s/registries.yaml on every edge node:
+# mirrors:
+#   docker.io: {endpoint: ["http://registry.local:5000"]}
+#   ghcr.io:   {endpoint: ["http://registry.local:5000"]}
